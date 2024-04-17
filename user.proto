@@ -18,3 +18,7 @@ message UserSignupResponse{
     string email=3;
     string phone=4;
 }
+
+service UserService{
+    
+}
