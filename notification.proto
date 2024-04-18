@@ -1,0 +1,27 @@
+syntax="proto3";
+
+package user;
+
+option go_package="./pb";
+
+
+
+message SendOtpRequest{
+    string email=1;
+}
+
+message VerifyOtpRequest{
+    string otp=1;
+    string email=2;
+}
+
+message VerifyOtpResponse{
+    bool verified=1;
+}
+
+message NoMessage{}
+
+service Notification{
+    rpc SendOTP(SendOtpRequest)returns(NoMessage);
+    rpc VerifyOTP(VerifyOtpRequest)returns(VerifyOtpResponse);
+}
