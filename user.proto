@@ -20,5 +20,5 @@ message UserSignupResponse{
 }
 
 service UserService{
-    
+    rpc UserSignup(UserSignupRequest)returns(UserSignupResponse);
 }
