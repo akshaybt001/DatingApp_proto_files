@@ -28,8 +28,21 @@ message GetUserById{
     string id=1;
 }
 
+message AddSkillRequest{
+    string skill=1;
+}
+
+message DeleteSkillRequest{
+    int32 skillId=1;
+    string userId=2;
+}
+
+message NoArg{}
+
 service UserService{
     rpc UserSignup(UserSignupRequest)returns(UserSignupResponse);
     rpc UserLogin(LoginRequest)returns(UserSignupResponse);
     rpc AdminLogin(LoginRequest)returns(UserSignupResponse);
+    rpc AdminAddSkill(AddSkillRequest)returns(NoArg);
+    rpc AdminDeleteSkill(DeleteSkillRequest)returns(NoArg);
 }
