@@ -37,12 +37,34 @@ message DeleteSkillRequest{
     string userId=2;
 }
 
+message AddAddressRequest{
+    string country=1;
+    string state=2;
+    string district=3;
+    string city=4;
+    string userId=5;
+}
+message AddressResponse{
+    string Id=1;
+    string country=2;
+    string state=3;
+    string district=4;
+    string city=5;
+    string userId=6;
+}
+
+
+
 message NoArg{}
 
 service UserService{
     rpc UserSignup(UserSignupRequest)returns(UserSignupResponse);
     rpc UserLogin(LoginRequest)returns(UserSignupResponse);
     rpc AdminLogin(LoginRequest)returns(UserSignupResponse);
+    rpc CreateProfile(GetUserById)returns(NoArg);
     rpc AdminAddSkill(AddSkillRequest)returns(NoArg);
     rpc AdminDeleteSkill(DeleteSkillRequest)returns(NoArg);
+    rpc UserAddAddress(AddAddressRequest)returns(NoArg);
+    rpc UserEditAddress(AddressResponse)returns(NoArg);
+    rpc UserGetAddress(GetUserById)returns(AddressResponse);
 }

@@ -22,8 +22,12 @@ const (
 	UserService_UserSignup_FullMethodName       = "/user.UserService/UserSignup"
 	UserService_UserLogin_FullMethodName        = "/user.UserService/UserLogin"
 	UserService_AdminLogin_FullMethodName       = "/user.UserService/AdminLogin"
+	UserService_CreateProfile_FullMethodName    = "/user.UserService/CreateProfile"
 	UserService_AdminAddSkill_FullMethodName    = "/user.UserService/AdminAddSkill"
 	UserService_AdminDeleteSkill_FullMethodName = "/user.UserService/AdminDeleteSkill"
+	UserService_UserAddAddress_FullMethodName   = "/user.UserService/UserAddAddress"
+	UserService_UserEditAddress_FullMethodName  = "/user.UserService/UserEditAddress"
+	UserService_UserGetAddress_FullMethodName   = "/user.UserService/UserGetAddress"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -33,8 +37,12 @@ type UserServiceClient interface {
 	UserSignup(ctx context.Context, in *UserSignupRequest, opts ...grpc.CallOption) (*UserSignupResponse, error)
 	UserLogin(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*UserSignupResponse, error)
 	AdminLogin(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*UserSignupResponse, error)
+	CreateProfile(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*NoArg, error)
 	AdminAddSkill(ctx context.Context, in *AddSkillRequest, opts ...grpc.CallOption) (*NoArg, error)
 	AdminDeleteSkill(ctx context.Context, in *DeleteSkillRequest, opts ...grpc.CallOption) (*NoArg, error)
+	UserAddAddress(ctx context.Context, in *AddAddressRequest, opts ...grpc.CallOption) (*NoArg, error)
+	UserEditAddress(ctx context.Context, in *AddressResponse, opts ...grpc.CallOption) (*NoArg, error)
+	UserGetAddress(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*AddressResponse, error)
 }
 
 type userServiceClient struct {
@@ -72,6 +80,15 @@ func (c *userServiceClient) AdminLogin(ctx context.Context, in *LoginRequest, op
 	return out, nil
 }
 
+func (c *userServiceClient) CreateProfile(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*NoArg, error) {
+	out := new(NoArg)
+	err := c.cc.Invoke(ctx, UserService_CreateProfile_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userServiceClient) AdminAddSkill(ctx context.Context, in *AddSkillRequest, opts ...grpc.CallOption) (*NoArg, error) {
 	out := new(NoArg)
 	err := c.cc.Invoke(ctx, UserService_AdminAddSkill_FullMethodName, in, out, opts...)
@@ -90,6 +107,33 @@ func (c *userServiceClient) AdminDeleteSkill(ctx context.Context, in *DeleteSkil
 	return out, nil
 }
 
+func (c *userServiceClient) UserAddAddress(ctx context.Context, in *AddAddressRequest, opts ...grpc.CallOption) (*NoArg, error) {
+	out := new(NoArg)
+	err := c.cc.Invoke(ctx, UserService_UserAddAddress_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) UserEditAddress(ctx context.Context, in *AddressResponse, opts ...grpc.CallOption) (*NoArg, error) {
+	out := new(NoArg)
+	err := c.cc.Invoke(ctx, UserService_UserEditAddress_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) UserGetAddress(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*AddressResponse, error) {
+	out := new(AddressResponse)
+	err := c.cc.Invoke(ctx, UserService_UserGetAddress_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -97,8 +141,12 @@ type UserServiceServer interface {
 	UserSignup(context.Context, *UserSignupRequest) (*UserSignupResponse, error)
 	UserLogin(context.Context, *LoginRequest) (*UserSignupResponse, error)
 	AdminLogin(context.Context, *LoginRequest) (*UserSignupResponse, error)
+	CreateProfile(context.Context, *GetUserById) (*NoArg, error)
 	AdminAddSkill(context.Context, *AddSkillRequest) (*NoArg, error)
 	AdminDeleteSkill(context.Context, *DeleteSkillRequest) (*NoArg, error)
+	UserAddAddress(context.Context, *AddAddressRequest) (*NoArg, error)
+	UserEditAddress(context.Context, *AddressResponse) (*NoArg, error)
+	UserGetAddress(context.Context, *GetUserById) (*AddressResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -115,11 +163,23 @@ func (UnimplementedUserServiceServer) UserLogin(context.Context, *LoginRequest) 
 func (UnimplementedUserServiceServer) AdminLogin(context.Context, *LoginRequest) (*UserSignupResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdminLogin not implemented")
 }
+func (UnimplementedUserServiceServer) CreateProfile(context.Context, *GetUserById) (*NoArg, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateProfile not implemented")
+}
 func (UnimplementedUserServiceServer) AdminAddSkill(context.Context, *AddSkillRequest) (*NoArg, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdminAddSkill not implemented")
 }
 func (UnimplementedUserServiceServer) AdminDeleteSkill(context.Context, *DeleteSkillRequest) (*NoArg, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdminDeleteSkill not implemented")
+}
+func (UnimplementedUserServiceServer) UserAddAddress(context.Context, *AddAddressRequest) (*NoArg, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserAddAddress not implemented")
+}
+func (UnimplementedUserServiceServer) UserEditAddress(context.Context, *AddressResponse) (*NoArg, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserEditAddress not implemented")
+}
+func (UnimplementedUserServiceServer) UserGetAddress(context.Context, *GetUserById) (*AddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserGetAddress not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -188,6 +248,24 @@ func _UserService_AdminLogin_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_CreateProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserById)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).CreateProfile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_CreateProfile_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).CreateProfile(ctx, req.(*GetUserById))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UserService_AdminAddSkill_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AddSkillRequest)
 	if err := dec(in); err != nil {
@@ -224,6 +302,60 @@ func _UserService_AdminDeleteSkill_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_UserAddAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddAddressRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).UserAddAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_UserAddAddress_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).UserAddAddress(ctx, req.(*AddAddressRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_UserEditAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddressResponse)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).UserEditAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_UserEditAddress_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).UserEditAddress(ctx, req.(*AddressResponse))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_UserGetAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserById)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).UserGetAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_UserGetAddress_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).UserGetAddress(ctx, req.(*GetUserById))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -244,12 +376,28 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_AdminLogin_Handler,
 		},
 		{
+			MethodName: "CreateProfile",
+			Handler:    _UserService_CreateProfile_Handler,
+		},
+		{
 			MethodName: "AdminAddSkill",
 			Handler:    _UserService_AdminAddSkill_Handler,
 		},
 		{
 			MethodName: "AdminDeleteSkill",
 			Handler:    _UserService_AdminDeleteSkill_Handler,
+		},
+		{
+			MethodName: "UserAddAddress",
+			Handler:    _UserService_UserAddAddress_Handler,
+		},
+		{
+			MethodName: "UserEditAddress",
+			Handler:    _UserService_UserEditAddress_Handler,
+		},
+		{
+			MethodName: "UserGetAddress",
+			Handler:    _UserService_UserGetAddress_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
