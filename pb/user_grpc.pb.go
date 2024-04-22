@@ -25,6 +25,8 @@ const (
 	UserService_CreateProfile_FullMethodName       = "/user.UserService/CreateProfile"
 	UserService_AdminAddInterest_FullMethodName    = "/user.UserService/AdminAddInterest"
 	UserService_AdminDeleteInterest_FullMethodName = "/user.UserService/AdminDeleteInterest"
+	UserService_AdminUpdateInterest_FullMethodName = "/user.UserService/AdminUpdateInterest"
+	UserService_GetAllSkills_FullMethodName        = "/user.UserService/GetAllSkills"
 	UserService_UserAddAddress_FullMethodName      = "/user.UserService/UserAddAddress"
 	UserService_UserEditAddress_FullMethodName     = "/user.UserService/UserEditAddress"
 	UserService_UserGetAddress_FullMethodName      = "/user.UserService/UserGetAddress"
@@ -40,6 +42,8 @@ type UserServiceClient interface {
 	CreateProfile(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*NoArg, error)
 	AdminAddInterest(ctx context.Context, in *AddInterestRequest, opts ...grpc.CallOption) (*NoArg, error)
 	AdminDeleteInterest(ctx context.Context, in *DeleteInterestRequest, opts ...grpc.CallOption) (*NoArg, error)
+	AdminUpdateInterest(ctx context.Context, in *InterestResponse, opts ...grpc.CallOption) (*NoArg, error)
+	GetAllSkills(ctx context.Context, in *NoArg, opts ...grpc.CallOption) (UserService_GetAllSkillsClient, error)
 	UserAddAddress(ctx context.Context, in *AddAddressRequest, opts ...grpc.CallOption) (*NoArg, error)
 	UserEditAddress(ctx context.Context, in *AddressResponse, opts ...grpc.CallOption) (*NoArg, error)
 	UserGetAddress(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*AddressResponse, error)
@@ -107,6 +111,47 @@ func (c *userServiceClient) AdminDeleteInterest(ctx context.Context, in *DeleteI
 	return out, nil
 }
 
+func (c *userServiceClient) AdminUpdateInterest(ctx context.Context, in *InterestResponse, opts ...grpc.CallOption) (*NoArg, error) {
+	out := new(NoArg)
+	err := c.cc.Invoke(ctx, UserService_AdminUpdateInterest_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetAllSkills(ctx context.Context, in *NoArg, opts ...grpc.CallOption) (UserService_GetAllSkillsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &UserService_ServiceDesc.Streams[0], UserService_GetAllSkills_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &userServiceGetAllSkillsClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type UserService_GetAllSkillsClient interface {
+	Recv() (*InterestResponse, error)
+	grpc.ClientStream
+}
+
+type userServiceGetAllSkillsClient struct {
+	grpc.ClientStream
+}
+
+func (x *userServiceGetAllSkillsClient) Recv() (*InterestResponse, error) {
+	m := new(InterestResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 func (c *userServiceClient) UserAddAddress(ctx context.Context, in *AddAddressRequest, opts ...grpc.CallOption) (*NoArg, error) {
 	out := new(NoArg)
 	err := c.cc.Invoke(ctx, UserService_UserAddAddress_FullMethodName, in, out, opts...)
@@ -144,6 +189,8 @@ type UserServiceServer interface {
 	CreateProfile(context.Context, *GetUserById) (*NoArg, error)
 	AdminAddInterest(context.Context, *AddInterestRequest) (*NoArg, error)
 	AdminDeleteInterest(context.Context, *DeleteInterestRequest) (*NoArg, error)
+	AdminUpdateInterest(context.Context, *InterestResponse) (*NoArg, error)
+	GetAllSkills(*NoArg, UserService_GetAllSkillsServer) error
 	UserAddAddress(context.Context, *AddAddressRequest) (*NoArg, error)
 	UserEditAddress(context.Context, *AddressResponse) (*NoArg, error)
 	UserGetAddress(context.Context, *GetUserById) (*AddressResponse, error)
@@ -171,6 +218,12 @@ func (UnimplementedUserServiceServer) AdminAddInterest(context.Context, *AddInte
 }
 func (UnimplementedUserServiceServer) AdminDeleteInterest(context.Context, *DeleteInterestRequest) (*NoArg, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdminDeleteInterest not implemented")
+}
+func (UnimplementedUserServiceServer) AdminUpdateInterest(context.Context, *InterestResponse) (*NoArg, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminUpdateInterest not implemented")
+}
+func (UnimplementedUserServiceServer) GetAllSkills(*NoArg, UserService_GetAllSkillsServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetAllSkills not implemented")
 }
 func (UnimplementedUserServiceServer) UserAddAddress(context.Context, *AddAddressRequest) (*NoArg, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserAddAddress not implemented")
@@ -302,6 +355,45 @@ func _UserService_AdminDeleteInterest_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_AdminUpdateInterest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InterestResponse)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).AdminUpdateInterest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_AdminUpdateInterest_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).AdminUpdateInterest(ctx, req.(*InterestResponse))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetAllSkills_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(NoArg)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(UserServiceServer).GetAllSkills(m, &userServiceGetAllSkillsServer{stream})
+}
+
+type UserService_GetAllSkillsServer interface {
+	Send(*InterestResponse) error
+	grpc.ServerStream
+}
+
+type userServiceGetAllSkillsServer struct {
+	grpc.ServerStream
+}
+
+func (x *userServiceGetAllSkillsServer) Send(m *InterestResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 func _UserService_UserAddAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AddAddressRequest)
 	if err := dec(in); err != nil {
@@ -388,6 +480,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_AdminDeleteInterest_Handler,
 		},
 		{
+			MethodName: "AdminUpdateInterest",
+			Handler:    _UserService_AdminUpdateInterest_Handler,
+		},
+		{
 			MethodName: "UserAddAddress",
 			Handler:    _UserService_UserAddAddress_Handler,
 		},
@@ -400,6 +496,12 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_UserGetAddress_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "GetAllSkills",
+			Handler:       _UserService_GetAllSkills_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "user.proto",
 }
