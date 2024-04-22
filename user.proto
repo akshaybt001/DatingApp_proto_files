@@ -28,11 +28,11 @@ message GetUserById{
     string id=1;
 }
 
-message AddSkillRequest{
+message AddInterestRequest{
     string skill=1;
 }
 
-message DeleteSkillRequest{
+message DeleteInterestRequest{
     int32 skillId=1;
     string userId=2;
 }
@@ -62,8 +62,8 @@ service UserService{
     rpc UserLogin(LoginRequest)returns(UserSignupResponse);
     rpc AdminLogin(LoginRequest)returns(UserSignupResponse);
     rpc CreateProfile(GetUserById)returns(NoArg);
-    rpc AdminAddSkill(AddSkillRequest)returns(NoArg);
-    rpc AdminDeleteSkill(DeleteSkillRequest)returns(NoArg);
+    rpc AdminAddInterest(AddInterestRequest)returns(NoArg);
+    rpc AdminDeleteInterest(DeleteInterestRequest)returns(NoArg);
     rpc UserAddAddress(AddAddressRequest)returns(NoArg);
     rpc UserEditAddress(AddressResponse)returns(NoArg);
     rpc UserGetAddress(GetUserById)returns(AddressResponse);
