@@ -19,9 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	UserService_UserSignup_FullMethodName = "/user.UserService/UserSignup"
-	UserService_UserLogin_FullMethodName  = "/user.UserService/UserLogin"
-	UserService_AdminLogin_FullMethodName = "/user.UserService/AdminLogin"
+	UserService_UserSignup_FullMethodName       = "/user.UserService/UserSignup"
+	UserService_UserLogin_FullMethodName        = "/user.UserService/UserLogin"
+	UserService_AdminLogin_FullMethodName       = "/user.UserService/AdminLogin"
+	UserService_AdminAddSkill_FullMethodName    = "/user.UserService/AdminAddSkill"
+	UserService_AdminDeleteSkill_FullMethodName = "/user.UserService/AdminDeleteSkill"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -31,6 +33,8 @@ type UserServiceClient interface {
 	UserSignup(ctx context.Context, in *UserSignupRequest, opts ...grpc.CallOption) (*UserSignupResponse, error)
 	UserLogin(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*UserSignupResponse, error)
 	AdminLogin(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*UserSignupResponse, error)
+	AdminAddSkill(ctx context.Context, in *AddSkillRequest, opts ...grpc.CallOption) (*NoArg, error)
+	AdminDeleteSkill(ctx context.Context, in *DeleteSkillRequest, opts ...grpc.CallOption) (*NoArg, error)
 }
 
 type userServiceClient struct {
@@ -68,6 +72,24 @@ func (c *userServiceClient) AdminLogin(ctx context.Context, in *LoginRequest, op
 	return out, nil
 }
 
+func (c *userServiceClient) AdminAddSkill(ctx context.Context, in *AddSkillRequest, opts ...grpc.CallOption) (*NoArg, error) {
+	out := new(NoArg)
+	err := c.cc.Invoke(ctx, UserService_AdminAddSkill_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) AdminDeleteSkill(ctx context.Context, in *DeleteSkillRequest, opts ...grpc.CallOption) (*NoArg, error) {
+	out := new(NoArg)
+	err := c.cc.Invoke(ctx, UserService_AdminDeleteSkill_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -75,6 +97,8 @@ type UserServiceServer interface {
 	UserSignup(context.Context, *UserSignupRequest) (*UserSignupResponse, error)
 	UserLogin(context.Context, *LoginRequest) (*UserSignupResponse, error)
 	AdminLogin(context.Context, *LoginRequest) (*UserSignupResponse, error)
+	AdminAddSkill(context.Context, *AddSkillRequest) (*NoArg, error)
+	AdminDeleteSkill(context.Context, *DeleteSkillRequest) (*NoArg, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -90,6 +114,12 @@ func (UnimplementedUserServiceServer) UserLogin(context.Context, *LoginRequest) 
 }
 func (UnimplementedUserServiceServer) AdminLogin(context.Context, *LoginRequest) (*UserSignupResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdminLogin not implemented")
+}
+func (UnimplementedUserServiceServer) AdminAddSkill(context.Context, *AddSkillRequest) (*NoArg, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminAddSkill not implemented")
+}
+func (UnimplementedUserServiceServer) AdminDeleteSkill(context.Context, *DeleteSkillRequest) (*NoArg, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminDeleteSkill not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -158,6 +188,42 @@ func _UserService_AdminLogin_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_AdminAddSkill_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddSkillRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).AdminAddSkill(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_AdminAddSkill_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).AdminAddSkill(ctx, req.(*AddSkillRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_AdminDeleteSkill_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteSkillRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).AdminDeleteSkill(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_AdminDeleteSkill_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).AdminDeleteSkill(ctx, req.(*DeleteSkillRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -176,6 +242,14 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AdminLogin",
 			Handler:    _UserService_AdminLogin_Handler,
+		},
+		{
+			MethodName: "AdminAddSkill",
+			Handler:    _UserService_AdminAddSkill_Handler,
+		},
+		{
+			MethodName: "AdminDeleteSkill",
+			Handler:    _UserService_AdminDeleteSkill_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
