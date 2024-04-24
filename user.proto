@@ -42,6 +42,10 @@ message InterestResponse{
     string interest=2;
 }
 
+message GetInterestByIdRequest{
+    int32 id=1;
+}
+
 message AddAddressRequest{
     string country=1;
     string state=2;
@@ -67,10 +71,17 @@ service UserService{
     rpc UserLogin(LoginRequest)returns(UserSignupResponse);
     rpc AdminLogin(LoginRequest)returns(UserSignupResponse);
     rpc CreateProfile(GetUserById)returns(NoArg);
+
     rpc AdminAddInterest(AddInterestRequest)returns(NoArg);
     rpc AdminDeleteInterest(DeleteInterestRequest)returns(NoArg);
     rpc AdminUpdateInterest(InterestResponse)returns(NoArg);
     rpc GetAllSkills(NoArg)returns(stream InterestResponse);
+
+    rpc AddInterestUser(DeleteInterestRequest)returns(NoArg);
+    rpc DeleteInterestUser(DeleteInterestRequest)returns(NoArg);
+    rpc GetInterestById(GetInterestByIdRequest)returns(InterestResponse);
+    rpc GetAllInterestsUser(GetUserById)returns(stream InterestResponse);
+
     rpc UserAddAddress(AddAddressRequest)returns(NoArg);
     rpc UserEditAddress(AddressResponse)returns(NoArg);
     rpc UserGetAddress(GetUserById)returns(AddressResponse);
