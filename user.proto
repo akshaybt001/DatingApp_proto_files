@@ -42,6 +42,20 @@ message InterestResponse{
     string interest=2;
 }
 
+message AddGenderRequest{
+    string gender=1;
+}
+
+message GenderResponse{
+    int32 id=1;
+    string gender=2;
+}
+
+message UpdateGenderRequest{
+    int32 genderId=1;
+    string userId=2;
+}
+
 message GetInterestByIdRequest{
     int32 id=1;
 }
@@ -62,6 +76,24 @@ message AddressResponse{
     string userId=6;
 }
 
+message PreferenceRequest{
+    int32 minage=1;
+    int32 maxage=2;
+    int32 gender=3;
+    string desirecity=4;
+    string userId=5;
+}
+
+message PreferenceResponse{
+    int32 id=1;
+    int32 minage=2;
+    int32 maxage=3;
+    int32 gender=4;
+    string desirecity=5;
+    string userId=6;
+}
+
+
 
 
 message NoArg{}
@@ -75,7 +107,7 @@ service UserService{
     rpc AdminAddInterest(AddInterestRequest)returns(NoArg);
     rpc AdminDeleteInterest(DeleteInterestRequest)returns(NoArg);
     rpc AdminUpdateInterest(InterestResponse)returns(NoArg);
-    rpc GetAllSkills(NoArg)returns(stream InterestResponse);
+    rpc GetAllInterest(NoArg)returns(stream InterestResponse);
 
     rpc AddInterestUser(DeleteInterestRequest)returns(NoArg);
     rpc DeleteInterestUser(DeleteInterestRequest)returns(NoArg);
@@ -85,4 +117,16 @@ service UserService{
     rpc UserAddAddress(AddAddressRequest)returns(NoArg);
     rpc UserEditAddress(AddressResponse)returns(NoArg);
     rpc UserGetAddress(GetUserById)returns(AddressResponse);
+
+    rpc AdminAddGender(AddGenderRequest)returns(NoArg);
+    rpc AdminUpdateGender(GenderResponse)returns(NoArg);
+    rpc GetAllGender(NoArg)returns(stream GenderResponse);
+
+
+    rpc AddGenderUser(UpdateGenderRequest)returns(NoArg);
+    rpc GetAllGenderUser(GetUserById)returns(stream GenderResponse);
+
+    rpc UserAddPreference(PreferenceRequest)returns(NoArg);
+    rpc UserEditPreference(PreferenceResponse)returns(NoArg);
+    rpc GetAllPreference(GetUserById)returns(PreferenceResponse);
 }
