@@ -103,6 +103,8 @@ service UserService{
     rpc UserLogin(LoginRequest)returns(UserSignupResponse);
     rpc AdminLogin(LoginRequest)returns(UserSignupResponse);
     rpc CreateProfile(GetUserById)returns(NoArg);
+    rpc GetUser(GetUserById)returns(UserSignupResponse);
+
 
     rpc AdminAddInterest(AddInterestRequest)returns(NoArg);
     rpc AdminDeleteInterest(DeleteInterestRequest)returns(NoArg);

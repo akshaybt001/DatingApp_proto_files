@@ -23,6 +23,7 @@ const (
 	UserService_UserLogin_FullMethodName           = "/user.UserService/UserLogin"
 	UserService_AdminLogin_FullMethodName          = "/user.UserService/AdminLogin"
 	UserService_CreateProfile_FullMethodName       = "/user.UserService/CreateProfile"
+	UserService_GetUser_FullMethodName             = "/user.UserService/GetUser"
 	UserService_AdminAddInterest_FullMethodName    = "/user.UserService/AdminAddInterest"
 	UserService_AdminDeleteInterest_FullMethodName = "/user.UserService/AdminDeleteInterest"
 	UserService_AdminUpdateInterest_FullMethodName = "/user.UserService/AdminUpdateInterest"
@@ -52,6 +53,7 @@ type UserServiceClient interface {
 	UserLogin(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*UserSignupResponse, error)
 	AdminLogin(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*UserSignupResponse, error)
 	CreateProfile(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*NoArg, error)
+	GetUser(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*UserSignupResponse, error)
 	AdminAddInterest(ctx context.Context, in *AddInterestRequest, opts ...grpc.CallOption) (*NoArg, error)
 	AdminDeleteInterest(ctx context.Context, in *DeleteInterestRequest, opts ...grpc.CallOption) (*NoArg, error)
 	AdminUpdateInterest(ctx context.Context, in *InterestResponse, opts ...grpc.CallOption) (*NoArg, error)
@@ -111,6 +113,15 @@ func (c *userServiceClient) AdminLogin(ctx context.Context, in *LoginRequest, op
 func (c *userServiceClient) CreateProfile(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*NoArg, error) {
 	out := new(NoArg)
 	err := c.cc.Invoke(ctx, UserService_CreateProfile_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetUser(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*UserSignupResponse, error) {
+	out := new(UserSignupResponse)
+	err := c.cc.Invoke(ctx, UserService_GetUser_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -388,6 +399,7 @@ type UserServiceServer interface {
 	UserLogin(context.Context, *LoginRequest) (*UserSignupResponse, error)
 	AdminLogin(context.Context, *LoginRequest) (*UserSignupResponse, error)
 	CreateProfile(context.Context, *GetUserById) (*NoArg, error)
+	GetUser(context.Context, *GetUserById) (*UserSignupResponse, error)
 	AdminAddInterest(context.Context, *AddInterestRequest) (*NoArg, error)
 	AdminDeleteInterest(context.Context, *DeleteInterestRequest) (*NoArg, error)
 	AdminUpdateInterest(context.Context, *InterestResponse) (*NoArg, error)
@@ -425,6 +437,9 @@ func (UnimplementedUserServiceServer) AdminLogin(context.Context, *LoginRequest)
 }
 func (UnimplementedUserServiceServer) CreateProfile(context.Context, *GetUserById) (*NoArg, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateProfile not implemented")
+}
+func (UnimplementedUserServiceServer) GetUser(context.Context, *GetUserById) (*UserSignupResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
 }
 func (UnimplementedUserServiceServer) AdminAddInterest(context.Context, *AddInterestRequest) (*NoArg, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdminAddInterest not implemented")
@@ -564,6 +579,24 @@ func _UserService_CreateProfile_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).CreateProfile(ctx, req.(*GetUserById))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserById)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetUser(ctx, req.(*GetUserById))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -944,6 +977,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateProfile",
 			Handler:    _UserService_CreateProfile_Handler,
+		},
+		{
+			MethodName: "GetUser",
+			Handler:    _UserService_GetUser_Handler,
 		},
 		{
 			MethodName: "AdminAddInterest",
