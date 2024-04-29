@@ -19,30 +19,32 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	UserService_UserSignup_FullMethodName          = "/user.UserService/UserSignup"
-	UserService_UserLogin_FullMethodName           = "/user.UserService/UserLogin"
-	UserService_AdminLogin_FullMethodName          = "/user.UserService/AdminLogin"
-	UserService_CreateProfile_FullMethodName       = "/user.UserService/CreateProfile"
-	UserService_GetUser_FullMethodName             = "/user.UserService/GetUser"
-	UserService_AdminAddInterest_FullMethodName    = "/user.UserService/AdminAddInterest"
-	UserService_AdminDeleteInterest_FullMethodName = "/user.UserService/AdminDeleteInterest"
-	UserService_AdminUpdateInterest_FullMethodName = "/user.UserService/AdminUpdateInterest"
-	UserService_GetAllInterest_FullMethodName      = "/user.UserService/GetAllInterest"
-	UserService_AddInterestUser_FullMethodName     = "/user.UserService/AddInterestUser"
-	UserService_DeleteInterestUser_FullMethodName  = "/user.UserService/DeleteInterestUser"
-	UserService_GetInterestById_FullMethodName     = "/user.UserService/GetInterestById"
-	UserService_GetAllInterestsUser_FullMethodName = "/user.UserService/GetAllInterestsUser"
-	UserService_UserAddAddress_FullMethodName      = "/user.UserService/UserAddAddress"
-	UserService_UserEditAddress_FullMethodName     = "/user.UserService/UserEditAddress"
-	UserService_UserGetAddress_FullMethodName      = "/user.UserService/UserGetAddress"
-	UserService_AdminAddGender_FullMethodName      = "/user.UserService/AdminAddGender"
-	UserService_AdminUpdateGender_FullMethodName   = "/user.UserService/AdminUpdateGender"
-	UserService_GetAllGender_FullMethodName        = "/user.UserService/GetAllGender"
-	UserService_AddGenderUser_FullMethodName       = "/user.UserService/AddGenderUser"
-	UserService_GetAllGenderUser_FullMethodName    = "/user.UserService/GetAllGenderUser"
-	UserService_UserAddPreference_FullMethodName   = "/user.UserService/UserAddPreference"
-	UserService_UserEditPreference_FullMethodName  = "/user.UserService/UserEditPreference"
-	UserService_GetAllPreference_FullMethodName    = "/user.UserService/GetAllPreference"
+	UserService_UserSignup_FullMethodName             = "/user.UserService/UserSignup"
+	UserService_UserLogin_FullMethodName              = "/user.UserService/UserLogin"
+	UserService_AdminLogin_FullMethodName             = "/user.UserService/AdminLogin"
+	UserService_CreateProfile_FullMethodName          = "/user.UserService/CreateProfile"
+	UserService_GetUser_FullMethodName                = "/user.UserService/GetUser"
+	UserService_AdminAddInterest_FullMethodName       = "/user.UserService/AdminAddInterest"
+	UserService_AdminDeleteInterest_FullMethodName    = "/user.UserService/AdminDeleteInterest"
+	UserService_AdminUpdateInterest_FullMethodName    = "/user.UserService/AdminUpdateInterest"
+	UserService_GetAllInterest_FullMethodName         = "/user.UserService/GetAllInterest"
+	UserService_AddInterestUser_FullMethodName        = "/user.UserService/AddInterestUser"
+	UserService_DeleteInterestUser_FullMethodName     = "/user.UserService/DeleteInterestUser"
+	UserService_GetInterestById_FullMethodName        = "/user.UserService/GetInterestById"
+	UserService_GetAllInterestsUser_FullMethodName    = "/user.UserService/GetAllInterestsUser"
+	UserService_UserAddAddress_FullMethodName         = "/user.UserService/UserAddAddress"
+	UserService_UserEditAddress_FullMethodName        = "/user.UserService/UserEditAddress"
+	UserService_UserGetAddress_FullMethodName         = "/user.UserService/UserGetAddress"
+	UserService_AdminAddGender_FullMethodName         = "/user.UserService/AdminAddGender"
+	UserService_AdminUpdateGender_FullMethodName      = "/user.UserService/AdminUpdateGender"
+	UserService_GetAllGender_FullMethodName           = "/user.UserService/GetAllGender"
+	UserService_AddGenderUser_FullMethodName          = "/user.UserService/AddGenderUser"
+	UserService_GetAllGenderUser_FullMethodName       = "/user.UserService/GetAllGenderUser"
+	UserService_UserAddPreference_FullMethodName      = "/user.UserService/UserAddPreference"
+	UserService_UserEditPreference_FullMethodName     = "/user.UserService/UserEditPreference"
+	UserService_GetAllPreference_FullMethodName       = "/user.UserService/GetAllPreference"
+	UserService_UserUploadProfileImage_FullMethodName = "/user.UserService/UserUploadProfileImage"
+	UserService_UserGetProfilePic_FullMethodName      = "/user.UserService/UserGetProfilePic"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -73,6 +75,8 @@ type UserServiceClient interface {
 	UserAddPreference(ctx context.Context, in *PreferenceRequest, opts ...grpc.CallOption) (*NoArg, error)
 	UserEditPreference(ctx context.Context, in *PreferenceResponse, opts ...grpc.CallOption) (*NoArg, error)
 	GetAllPreference(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*PreferenceResponse, error)
+	UserUploadProfileImage(ctx context.Context, in *UserImageRequest, opts ...grpc.CallOption) (*UserImageResponse, error)
+	UserGetProfilePic(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*UserImageResponse, error)
 }
 
 type userServiceClient struct {
@@ -391,6 +395,24 @@ func (c *userServiceClient) GetAllPreference(ctx context.Context, in *GetUserByI
 	return out, nil
 }
 
+func (c *userServiceClient) UserUploadProfileImage(ctx context.Context, in *UserImageRequest, opts ...grpc.CallOption) (*UserImageResponse, error) {
+	out := new(UserImageResponse)
+	err := c.cc.Invoke(ctx, UserService_UserUploadProfileImage_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) UserGetProfilePic(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*UserImageResponse, error) {
+	out := new(UserImageResponse)
+	err := c.cc.Invoke(ctx, UserService_UserGetProfilePic_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -419,6 +441,8 @@ type UserServiceServer interface {
 	UserAddPreference(context.Context, *PreferenceRequest) (*NoArg, error)
 	UserEditPreference(context.Context, *PreferenceResponse) (*NoArg, error)
 	GetAllPreference(context.Context, *GetUserById) (*PreferenceResponse, error)
+	UserUploadProfileImage(context.Context, *UserImageRequest) (*UserImageResponse, error)
+	UserGetProfilePic(context.Context, *GetUserById) (*UserImageResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -497,6 +521,12 @@ func (UnimplementedUserServiceServer) UserEditPreference(context.Context, *Prefe
 }
 func (UnimplementedUserServiceServer) GetAllPreference(context.Context, *GetUserById) (*PreferenceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllPreference not implemented")
+}
+func (UnimplementedUserServiceServer) UserUploadProfileImage(context.Context, *UserImageRequest) (*UserImageResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserUploadProfileImage not implemented")
+}
+func (UnimplementedUserServiceServer) UserGetProfilePic(context.Context, *GetUserById) (*UserImageResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserGetProfilePic not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -955,6 +985,42 @@ func _UserService_GetAllPreference_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_UserUploadProfileImage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserImageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).UserUploadProfileImage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_UserUploadProfileImage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).UserUploadProfileImage(ctx, req.(*UserImageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_UserGetProfilePic_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserById)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).UserGetProfilePic(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_UserGetProfilePic_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).UserGetProfilePic(ctx, req.(*GetUserById))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1041,6 +1107,14 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetAllPreference",
 			Handler:    _UserService_GetAllPreference_Handler,
+		},
+		{
+			MethodName: "UserUploadProfileImage",
+			Handler:    _UserService_UserUploadProfileImage_Handler,
+		},
+		{
+			MethodName: "UserGetProfilePic",
+			Handler:    _UserService_UserGetProfilePic_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

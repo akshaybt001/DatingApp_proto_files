@@ -93,6 +93,16 @@ message PreferenceResponse{
     string userId=6;
 }
 
+message UserImageRequest{
+    string objectName=1;
+    string filePath=2;
+    bytes imageData=3;
+    string userId=4;
+}
+message UserImageResponse{
+    string url=1;
+}
+
 
 
 
@@ -131,4 +141,6 @@ service UserService{
     rpc UserAddPreference(PreferenceRequest)returns(NoArg);
     rpc UserEditPreference(PreferenceResponse)returns(NoArg);
     rpc GetAllPreference(GetUserById)returns(PreferenceResponse);
+    rpc UserUploadProfileImage(UserImageRequest)returns(UserImageResponse);
+    rpc UserGetProfilePic(GetUserById)returns(UserImageResponse);
 }
