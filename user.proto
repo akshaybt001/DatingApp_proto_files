@@ -132,11 +132,11 @@ service UserService{
 
     rpc AdminAddGender(AddGenderRequest)returns(NoArg);
     rpc AdminUpdateGender(GenderResponse)returns(NoArg);
-    rpc GetAllGender(NoArg)returns(GenderResponse);
+    rpc GetAllGender(NoArg)returns(stream GenderResponse);
 
 
     rpc AddGenderUser(UpdateGenderRequest)returns(NoArg);
-    rpc GetAllGenderUser(GetUserById)returns(stream GenderResponse);
+    rpc GetAllGenderUser(GetUserById)returns(GenderResponse);
 
     rpc UserAddPreference(PreferenceRequest)returns(NoArg);
     rpc UserEditPreference(PreferenceResponse)returns(NoArg);
