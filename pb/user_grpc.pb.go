@@ -69,7 +69,7 @@ type UserServiceClient interface {
 	UserGetAddress(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*AddressResponse, error)
 	AdminAddGender(ctx context.Context, in *AddGenderRequest, opts ...grpc.CallOption) (*NoArg, error)
 	AdminUpdateGender(ctx context.Context, in *GenderResponse, opts ...grpc.CallOption) (*NoArg, error)
-	GetAllGender(ctx context.Context, in *NoArg, opts ...grpc.CallOption) (UserService_GetAllGenderClient, error)
+	GetAllGender(ctx context.Context, in *NoArg, opts ...grpc.CallOption) (*GenderResponse, error)
 	AddGenderUser(ctx context.Context, in *UpdateGenderRequest, opts ...grpc.CallOption) (*NoArg, error)
 	GetAllGenderUser(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (UserService_GetAllGenderUserClient, error)
 	UserAddPreference(ctx context.Context, in *PreferenceRequest, opts ...grpc.CallOption) (*NoArg, error)
@@ -295,36 +295,13 @@ func (c *userServiceClient) AdminUpdateGender(ctx context.Context, in *GenderRes
 	return out, nil
 }
 
-func (c *userServiceClient) GetAllGender(ctx context.Context, in *NoArg, opts ...grpc.CallOption) (UserService_GetAllGenderClient, error) {
-	stream, err := c.cc.NewStream(ctx, &UserService_ServiceDesc.Streams[2], UserService_GetAllGender_FullMethodName, opts...)
+func (c *userServiceClient) GetAllGender(ctx context.Context, in *NoArg, opts ...grpc.CallOption) (*GenderResponse, error) {
+	out := new(GenderResponse)
+	err := c.cc.Invoke(ctx, UserService_GetAllGender_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &userServiceGetAllGenderClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type UserService_GetAllGenderClient interface {
-	Recv() (*GenderResponse, error)
-	grpc.ClientStream
-}
-
-type userServiceGetAllGenderClient struct {
-	grpc.ClientStream
-}
-
-func (x *userServiceGetAllGenderClient) Recv() (*GenderResponse, error) {
-	m := new(GenderResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
+	return out, nil
 }
 
 func (c *userServiceClient) AddGenderUser(ctx context.Context, in *UpdateGenderRequest, opts ...grpc.CallOption) (*NoArg, error) {
@@ -337,7 +314,7 @@ func (c *userServiceClient) AddGenderUser(ctx context.Context, in *UpdateGenderR
 }
 
 func (c *userServiceClient) GetAllGenderUser(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (UserService_GetAllGenderUserClient, error) {
-	stream, err := c.cc.NewStream(ctx, &UserService_ServiceDesc.Streams[3], UserService_GetAllGenderUser_FullMethodName, opts...)
+	stream, err := c.cc.NewStream(ctx, &UserService_ServiceDesc.Streams[2], UserService_GetAllGenderUser_FullMethodName, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -435,7 +412,7 @@ type UserServiceServer interface {
 	UserGetAddress(context.Context, *GetUserById) (*AddressResponse, error)
 	AdminAddGender(context.Context, *AddGenderRequest) (*NoArg, error)
 	AdminUpdateGender(context.Context, *GenderResponse) (*NoArg, error)
-	GetAllGender(*NoArg, UserService_GetAllGenderServer) error
+	GetAllGender(context.Context, *NoArg) (*GenderResponse, error)
 	AddGenderUser(context.Context, *UpdateGenderRequest) (*NoArg, error)
 	GetAllGenderUser(*GetUserById, UserService_GetAllGenderUserServer) error
 	UserAddPreference(context.Context, *PreferenceRequest) (*NoArg, error)
@@ -504,8 +481,8 @@ func (UnimplementedUserServiceServer) AdminAddGender(context.Context, *AddGender
 func (UnimplementedUserServiceServer) AdminUpdateGender(context.Context, *GenderResponse) (*NoArg, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdminUpdateGender not implemented")
 }
-func (UnimplementedUserServiceServer) GetAllGender(*NoArg, UserService_GetAllGenderServer) error {
-	return status.Errorf(codes.Unimplemented, "method GetAllGender not implemented")
+func (UnimplementedUserServiceServer) GetAllGender(context.Context, *NoArg) (*GenderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllGender not implemented")
 }
 func (UnimplementedUserServiceServer) AddGenderUser(context.Context, *UpdateGenderRequest) (*NoArg, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddGenderUser not implemented")
@@ -871,25 +848,22 @@ func _UserService_AdminUpdateGender_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_GetAllGender_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(NoArg)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
+func _UserService_GetAllGender_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NoArg)
+	if err := dec(in); err != nil {
+		return nil, err
 	}
-	return srv.(UserServiceServer).GetAllGender(m, &userServiceGetAllGenderServer{stream})
-}
-
-type UserService_GetAllGenderServer interface {
-	Send(*GenderResponse) error
-	grpc.ServerStream
-}
-
-type userServiceGetAllGenderServer struct {
-	grpc.ServerStream
-}
-
-func (x *userServiceGetAllGenderServer) Send(m *GenderResponse) error {
-	return x.ServerStream.SendMsg(m)
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetAllGender(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetAllGender_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetAllGender(ctx, req.(*NoArg))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _UserService_AddGenderUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -1093,6 +1067,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_AdminUpdateGender_Handler,
 		},
 		{
+			MethodName: "GetAllGender",
+			Handler:    _UserService_GetAllGender_Handler,
+		},
+		{
 			MethodName: "AddGenderUser",
 			Handler:    _UserService_AddGenderUser_Handler,
 		},
@@ -1126,11 +1104,6 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "GetAllInterestsUser",
 			Handler:       _UserService_GetAllInterestsUser_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "GetAllGender",
-			Handler:       _UserService_GetAllGender_Handler,
 			ServerStreams: true,
 		},
 		{
