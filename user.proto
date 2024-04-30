@@ -108,6 +108,10 @@ message UserAgeRequest{
     string userId=2;
 }
 
+message UserAgeResponse{
+    int32 age=1;
+}
+
 
 
 
@@ -131,6 +135,7 @@ service UserService{
     rpc GetInterestById(GetInterestByIdRequest)returns(InterestResponse);
     rpc GetAllInterestsUser(GetUserById)returns(stream InterestResponse);
     rpc UserAddAge(UserAgeRequest)returns(NoArg);
+    rpc UserGetAge(GetUserById)returns(UserAgeResponse);
 
     rpc UserAddAddress(AddAddressRequest)returns(NoArg);
     rpc UserEditAddress(AddressResponse)returns(NoArg);

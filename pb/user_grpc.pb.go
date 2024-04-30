@@ -33,6 +33,7 @@ const (
 	UserService_GetInterestById_FullMethodName        = "/user.UserService/GetInterestById"
 	UserService_GetAllInterestsUser_FullMethodName    = "/user.UserService/GetAllInterestsUser"
 	UserService_UserAddAge_FullMethodName             = "/user.UserService/UserAddAge"
+	UserService_UserGetAge_FullMethodName             = "/user.UserService/UserGetAge"
 	UserService_UserAddAddress_FullMethodName         = "/user.UserService/UserAddAddress"
 	UserService_UserEditAddress_FullMethodName        = "/user.UserService/UserEditAddress"
 	UserService_UserGetAddress_FullMethodName         = "/user.UserService/UserGetAddress"
@@ -66,6 +67,7 @@ type UserServiceClient interface {
 	GetInterestById(ctx context.Context, in *GetInterestByIdRequest, opts ...grpc.CallOption) (*InterestResponse, error)
 	GetAllInterestsUser(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (UserService_GetAllInterestsUserClient, error)
 	UserAddAge(ctx context.Context, in *UserAgeRequest, opts ...grpc.CallOption) (*NoArg, error)
+	UserGetAge(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*UserAgeResponse, error)
 	UserAddAddress(ctx context.Context, in *AddAddressRequest, opts ...grpc.CallOption) (*NoArg, error)
 	UserEditAddress(ctx context.Context, in *AddressResponse, opts ...grpc.CallOption) (*NoArg, error)
 	UserGetAddress(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*AddressResponse, error)
@@ -261,6 +263,15 @@ func (c *userServiceClient) UserAddAge(ctx context.Context, in *UserAgeRequest, 
 	return out, nil
 }
 
+func (c *userServiceClient) UserGetAge(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*UserAgeResponse, error) {
+	out := new(UserAgeResponse)
+	err := c.cc.Invoke(ctx, UserService_UserGetAge_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userServiceClient) UserAddAddress(ctx context.Context, in *AddAddressRequest, opts ...grpc.CallOption) (*NoArg, error) {
 	out := new(NoArg)
 	err := c.cc.Invoke(ctx, UserService_UserAddAddress_FullMethodName, in, out, opts...)
@@ -419,6 +430,7 @@ type UserServiceServer interface {
 	GetInterestById(context.Context, *GetInterestByIdRequest) (*InterestResponse, error)
 	GetAllInterestsUser(*GetUserById, UserService_GetAllInterestsUserServer) error
 	UserAddAge(context.Context, *UserAgeRequest) (*NoArg, error)
+	UserGetAge(context.Context, *GetUserById) (*UserAgeResponse, error)
 	UserAddAddress(context.Context, *AddAddressRequest) (*NoArg, error)
 	UserEditAddress(context.Context, *AddressResponse) (*NoArg, error)
 	UserGetAddress(context.Context, *GetUserById) (*AddressResponse, error)
@@ -480,6 +492,9 @@ func (UnimplementedUserServiceServer) GetAllInterestsUser(*GetUserById, UserServ
 }
 func (UnimplementedUserServiceServer) UserAddAge(context.Context, *UserAgeRequest) (*NoArg, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserAddAge not implemented")
+}
+func (UnimplementedUserServiceServer) UserGetAge(context.Context, *GetUserById) (*UserAgeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserGetAge not implemented")
 }
 func (UnimplementedUserServiceServer) UserAddAddress(context.Context, *AddAddressRequest) (*NoArg, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserAddAddress not implemented")
@@ -791,6 +806,24 @@ func _UserService_UserAddAge_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_UserGetAge_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserById)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).UserGetAge(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_UserGetAge_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).UserGetAge(ctx, req.(*GetUserById))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UserService_UserAddAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AddAddressRequest)
 	if err := dec(in); err != nil {
@@ -1082,6 +1115,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserAddAge",
 			Handler:    _UserService_UserAddAge_Handler,
+		},
+		{
+			MethodName: "UserGetAge",
+			Handler:    _UserService_UserGetAge_Handler,
 		},
 		{
 			MethodName: "UserAddAddress",
