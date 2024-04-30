@@ -103,6 +103,10 @@ message UserImageResponse{
     string url=1;
 }
 
+message UserAgeRequest{
+    string dob=1;
+}
+
 
 
 
@@ -125,6 +129,7 @@ service UserService{
     rpc DeleteInterestUser(DeleteInterestRequest)returns(NoArg);
     rpc GetInterestById(GetInterestByIdRequest)returns(InterestResponse);
     rpc GetAllInterestsUser(GetUserById)returns(stream InterestResponse);
+    rpc UserAddAge(UserAgeRequest)returns(NoArg);
 
     rpc UserAddAddress(AddAddressRequest)returns(NoArg);
     rpc UserEditAddress(AddressResponse)returns(NoArg);
