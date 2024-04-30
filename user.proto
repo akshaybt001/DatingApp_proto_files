@@ -105,6 +105,7 @@ message UserImageResponse{
 
 message UserAgeRequest{
     string dob=1;
+    string userId=2;
 }
 
 
