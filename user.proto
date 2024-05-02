@@ -112,8 +112,16 @@ message UserAgeResponse{
     int32 age=1;
 }
 
-
-
+message HomeResponse{
+    string id=1;
+    string name=2;
+    int32 age=3;
+    string gender=4;
+    string city=5;
+    string country=6;
+    string image=7;
+    repeated string interests=8;
+}
 
 message NoArg{}
 
@@ -154,4 +162,7 @@ service UserService{
     rpc GetAllPreference(GetUserById)returns(PreferenceResponse);
     rpc UserUploadProfileImage(UserImageRequest)returns(UserImageResponse);
     rpc UserGetProfilePic(GetUserById)returns(UserImageResponse);
+    rpc HomePage(GetUserById)returns(stream HomeResponse);
+
+
 }

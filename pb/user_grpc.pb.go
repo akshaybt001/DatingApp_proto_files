@@ -47,6 +47,7 @@ const (
 	UserService_GetAllPreference_FullMethodName       = "/user.UserService/GetAllPreference"
 	UserService_UserUploadProfileImage_FullMethodName = "/user.UserService/UserUploadProfileImage"
 	UserService_UserGetProfilePic_FullMethodName      = "/user.UserService/UserGetProfilePic"
+	UserService_HomePage_FullMethodName               = "/user.UserService/HomePage"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -81,6 +82,7 @@ type UserServiceClient interface {
 	GetAllPreference(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*PreferenceResponse, error)
 	UserUploadProfileImage(ctx context.Context, in *UserImageRequest, opts ...grpc.CallOption) (*UserImageResponse, error)
 	UserGetProfilePic(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*UserImageResponse, error)
+	HomePage(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (UserService_HomePageClient, error)
 }
 
 type userServiceClient struct {
@@ -412,6 +414,38 @@ func (c *userServiceClient) UserGetProfilePic(ctx context.Context, in *GetUserBy
 	return out, nil
 }
 
+func (c *userServiceClient) HomePage(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (UserService_HomePageClient, error) {
+	stream, err := c.cc.NewStream(ctx, &UserService_ServiceDesc.Streams[3], UserService_HomePage_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &userServiceHomePageClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type UserService_HomePageClient interface {
+	Recv() (*HomeResponse, error)
+	grpc.ClientStream
+}
+
+type userServiceHomePageClient struct {
+	grpc.ClientStream
+}
+
+func (x *userServiceHomePageClient) Recv() (*HomeResponse, error) {
+	m := new(HomeResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -444,6 +478,7 @@ type UserServiceServer interface {
 	GetAllPreference(context.Context, *GetUserById) (*PreferenceResponse, error)
 	UserUploadProfileImage(context.Context, *UserImageRequest) (*UserImageResponse, error)
 	UserGetProfilePic(context.Context, *GetUserById) (*UserImageResponse, error)
+	HomePage(*GetUserById, UserService_HomePageServer) error
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -534,6 +569,9 @@ func (UnimplementedUserServiceServer) UserUploadProfileImage(context.Context, *U
 }
 func (UnimplementedUserServiceServer) UserGetProfilePic(context.Context, *GetUserById) (*UserImageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserGetProfilePic not implemented")
+}
+func (UnimplementedUserServiceServer) HomePage(*GetUserById, UserService_HomePageServer) error {
+	return status.Errorf(codes.Unimplemented, "method HomePage not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -1061,6 +1099,27 @@ func _UserService_UserGetProfilePic_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_HomePage_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(GetUserById)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(UserServiceServer).HomePage(m, &userServiceHomePageServer{stream})
+}
+
+type UserService_HomePageServer interface {
+	Send(*HomeResponse) error
+	grpc.ServerStream
+}
+
+type userServiceHomePageServer struct {
+	grpc.ServerStream
+}
+
+func (x *userServiceHomePageServer) Send(m *HomeResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1183,6 +1242,11 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "GetAllGender",
 			Handler:       _UserService_GetAllGender_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "HomePage",
+			Handler:       _UserService_HomePage_Handler,
 			ServerStreams: true,
 		},
 	},
