@@ -162,7 +162,7 @@ service UserService{
     rpc GetAllPreference(GetUserById)returns(PreferenceResponse);
     rpc UserUploadProfileImage(UserImageRequest)returns(UserImageResponse);
     rpc UserGetProfilePic(GetUserById)returns(UserImageResponse);
-    rpc HomePage(GetUserById)returns(stream HomeResponse);
+    rpc HomePage(GetUserById)returns(HomeResponse);
 
 
 }

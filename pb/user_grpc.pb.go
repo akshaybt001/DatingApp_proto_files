@@ -82,7 +82,7 @@ type UserServiceClient interface {
 	GetAllPreference(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*PreferenceResponse, error)
 	UserUploadProfileImage(ctx context.Context, in *UserImageRequest, opts ...grpc.CallOption) (*UserImageResponse, error)
 	UserGetProfilePic(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*UserImageResponse, error)
-	HomePage(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (UserService_HomePageClient, error)
+	HomePage(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*HomeResponse, error)
 }
 
 type userServiceClient struct {
@@ -414,36 +414,13 @@ func (c *userServiceClient) UserGetProfilePic(ctx context.Context, in *GetUserBy
 	return out, nil
 }
 
-func (c *userServiceClient) HomePage(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (UserService_HomePageClient, error) {
-	stream, err := c.cc.NewStream(ctx, &UserService_ServiceDesc.Streams[3], UserService_HomePage_FullMethodName, opts...)
+func (c *userServiceClient) HomePage(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*HomeResponse, error) {
+	out := new(HomeResponse)
+	err := c.cc.Invoke(ctx, UserService_HomePage_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &userServiceHomePageClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type UserService_HomePageClient interface {
-	Recv() (*HomeResponse, error)
-	grpc.ClientStream
-}
-
-type userServiceHomePageClient struct {
-	grpc.ClientStream
-}
-
-func (x *userServiceHomePageClient) Recv() (*HomeResponse, error) {
-	m := new(HomeResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
+	return out, nil
 }
 
 // UserServiceServer is the server API for UserService service.
@@ -478,7 +455,7 @@ type UserServiceServer interface {
 	GetAllPreference(context.Context, *GetUserById) (*PreferenceResponse, error)
 	UserUploadProfileImage(context.Context, *UserImageRequest) (*UserImageResponse, error)
 	UserGetProfilePic(context.Context, *GetUserById) (*UserImageResponse, error)
-	HomePage(*GetUserById, UserService_HomePageServer) error
+	HomePage(context.Context, *GetUserById) (*HomeResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -570,8 +547,8 @@ func (UnimplementedUserServiceServer) UserUploadProfileImage(context.Context, *U
 func (UnimplementedUserServiceServer) UserGetProfilePic(context.Context, *GetUserById) (*UserImageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserGetProfilePic not implemented")
 }
-func (UnimplementedUserServiceServer) HomePage(*GetUserById, UserService_HomePageServer) error {
-	return status.Errorf(codes.Unimplemented, "method HomePage not implemented")
+func (UnimplementedUserServiceServer) HomePage(context.Context, *GetUserById) (*HomeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HomePage not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -1099,25 +1076,22 @@ func _UserService_UserGetProfilePic_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserService_HomePage_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(GetUserById)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
+func _UserService_HomePage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserById)
+	if err := dec(in); err != nil {
+		return nil, err
 	}
-	return srv.(UserServiceServer).HomePage(m, &userServiceHomePageServer{stream})
-}
-
-type UserService_HomePageServer interface {
-	Send(*HomeResponse) error
-	grpc.ServerStream
-}
-
-type userServiceHomePageServer struct {
-	grpc.ServerStream
-}
-
-func (x *userServiceHomePageServer) Send(m *HomeResponse) error {
-	return x.ServerStream.SendMsg(m)
+	if interceptor == nil {
+		return srv.(UserServiceServer).HomePage(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_HomePage_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).HomePage(ctx, req.(*GetUserById))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
@@ -1227,6 +1201,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "UserGetProfilePic",
 			Handler:    _UserService_UserGetProfilePic_Handler,
 		},
+		{
+			MethodName: "HomePage",
+			Handler:    _UserService_HomePage_Handler,
+		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
@@ -1242,11 +1220,6 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "GetAllGender",
 			Handler:       _UserService_GetAllGender_Handler,
-			ServerStreams: true,
-		},
-		{
-			StreamName:    "HomePage",
-			Handler:       _UserService_HomePage_Handler,
 			ServerStreams: true,
 		},
 	},
