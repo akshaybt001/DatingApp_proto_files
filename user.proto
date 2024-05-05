@@ -164,5 +164,5 @@ service UserService{
     rpc UserGetProfilePic(GetUserById)returns(UserImageResponse);
     rpc HomePage(GetUserById)returns(HomeResponse);
 
-
+    rpc IsUserExist(GetUserById)returns(NoArg);
 }
