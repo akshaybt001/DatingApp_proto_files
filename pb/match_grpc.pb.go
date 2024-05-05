@@ -7,7 +7,10 @@
 package pb
 
 import (
+	context "context"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -15,12 +18,17 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-const ()
+const (
+	MatchService_Like_FullMethodName   = "/user.MatchService/Like"
+	MatchService_Unlike_FullMethodName = "/user.MatchService/Unlike"
+)
 
 // MatchServiceClient is the client API for MatchService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MatchServiceClient interface {
+	Like(ctx context.Context, in *LikeRequest, opts ...grpc.CallOption) (*NoPara, error)
+	Unlike(ctx context.Context, in *LikeRequest, opts ...grpc.CallOption) (*NoPara, error)
 }
 
 type matchServiceClient struct {
@@ -31,10 +39,30 @@ func NewMatchServiceClient(cc grpc.ClientConnInterface) MatchServiceClient {
 	return &matchServiceClient{cc}
 }
 
+func (c *matchServiceClient) Like(ctx context.Context, in *LikeRequest, opts ...grpc.CallOption) (*NoPara, error) {
+	out := new(NoPara)
+	err := c.cc.Invoke(ctx, MatchService_Like_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *matchServiceClient) Unlike(ctx context.Context, in *LikeRequest, opts ...grpc.CallOption) (*NoPara, error) {
+	out := new(NoPara)
+	err := c.cc.Invoke(ctx, MatchService_Unlike_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MatchServiceServer is the server API for MatchService service.
 // All implementations must embed UnimplementedMatchServiceServer
 // for forward compatibility
 type MatchServiceServer interface {
+	Like(context.Context, *LikeRequest) (*NoPara, error)
+	Unlike(context.Context, *LikeRequest) (*NoPara, error)
 	mustEmbedUnimplementedMatchServiceServer()
 }
 
@@ -42,6 +70,12 @@ type MatchServiceServer interface {
 type UnimplementedMatchServiceServer struct {
 }
 
+func (UnimplementedMatchServiceServer) Like(context.Context, *LikeRequest) (*NoPara, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Like not implemented")
+}
+func (UnimplementedMatchServiceServer) Unlike(context.Context, *LikeRequest) (*NoPara, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Unlike not implemented")
+}
 func (UnimplementedMatchServiceServer) mustEmbedUnimplementedMatchServiceServer() {}
 
 // UnsafeMatchServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -55,13 +89,58 @@ func RegisterMatchServiceServer(s grpc.ServiceRegistrar, srv MatchServiceServer)
 	s.RegisterService(&MatchService_ServiceDesc, srv)
 }
 
+func _MatchService_Like_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LikeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MatchServiceServer).Like(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MatchService_Like_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MatchServiceServer).Like(ctx, req.(*LikeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MatchService_Unlike_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LikeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MatchServiceServer).Unlike(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MatchService_Unlike_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MatchServiceServer).Unlike(ctx, req.(*LikeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MatchService_ServiceDesc is the grpc.ServiceDesc for MatchService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var MatchService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "user.MatchService",
 	HandlerType: (*MatchServiceServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams:     []grpc.StreamDesc{},
-	Metadata:    "match.proto",
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Like",
+			Handler:    _MatchService_Like_Handler,
+		},
+		{
+			MethodName: "Unlike",
+			Handler:    _MatchService_Unlike_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "match.proto",
 }

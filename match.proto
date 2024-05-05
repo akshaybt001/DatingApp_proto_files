@@ -4,6 +4,16 @@ package user;
 
 option go_package="./pb";
 
-service MatchService{
+
+message LikeRequest{
+    string likedId=1;
+    string userId=2;
     
+}
+
+message NoPara{}
+
+service MatchService{
+    rpc Like(LikeRequest)returns(NoPara);
+    rpc Unlike(LikeRequest)returns(NoPara);
 }
