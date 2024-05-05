@@ -49,6 +49,7 @@ const (
 	UserService_UserGetProfilePic_FullMethodName      = "/user.UserService/UserGetProfilePic"
 	UserService_HomePage_FullMethodName               = "/user.UserService/HomePage"
 	UserService_IsUserExist_FullMethodName            = "/user.UserService/IsUserExist"
+	UserService_GetUserData_FullMethodName            = "/user.UserService/GetUserData"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -85,6 +86,7 @@ type UserServiceClient interface {
 	UserGetProfilePic(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*UserImageResponse, error)
 	HomePage(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*HomeResponse, error)
 	IsUserExist(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*IsUserExistResponse, error)
+	GetUserData(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*UserDataResponse, error)
 }
 
 type userServiceClient struct {
@@ -434,6 +436,15 @@ func (c *userServiceClient) IsUserExist(ctx context.Context, in *GetUserById, op
 	return out, nil
 }
 
+func (c *userServiceClient) GetUserData(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*UserDataResponse, error) {
+	out := new(UserDataResponse)
+	err := c.cc.Invoke(ctx, UserService_GetUserData_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -468,6 +479,7 @@ type UserServiceServer interface {
 	UserGetProfilePic(context.Context, *GetUserById) (*UserImageResponse, error)
 	HomePage(context.Context, *GetUserById) (*HomeResponse, error)
 	IsUserExist(context.Context, *GetUserById) (*IsUserExistResponse, error)
+	GetUserData(context.Context, *GetUserById) (*UserDataResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -564,6 +576,9 @@ func (UnimplementedUserServiceServer) HomePage(context.Context, *GetUserById) (*
 }
 func (UnimplementedUserServiceServer) IsUserExist(context.Context, *GetUserById) (*IsUserExistResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method IsUserExist not implemented")
+}
+func (UnimplementedUserServiceServer) GetUserData(context.Context, *GetUserById) (*UserDataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserData not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -1127,6 +1142,24 @@ func _UserService_IsUserExist_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GetUserData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserById)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetUserData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetUserData_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetUserData(ctx, req.(*GetUserById))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1241,6 +1274,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "IsUserExist",
 			Handler:    _UserService_IsUserExist_Handler,
+		},
+		{
+			MethodName: "GetUserData",
+			Handler:    _UserService_GetUserData_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

@@ -127,6 +127,16 @@ message IsUserExistResponse{
     bool isExist=1;
 }
 
+message UserDataResponse{
+    string id=1;
+    string name=2;
+    string email=3;
+    string phone=4;
+    bool isBlocked=5;
+    int32 likeCount=6;
+    bool isSubscribed=7;
+}
+
 message NoArg{}
 
 service UserService{
@@ -169,4 +179,5 @@ service UserService{
     rpc HomePage(GetUserById)returns(HomeResponse);
 
     rpc IsUserExist(GetUserById)returns(IsUserExistResponse);
+    rpc GetUserData(GetUserById)returns(UserDataResponse);
 }
