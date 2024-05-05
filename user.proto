@@ -123,6 +123,10 @@ message HomeResponse{
     repeated string interests=8;
 }
 
+message IsUserExistResponse{
+    bool isExist=1;
+}
+
 message NoArg{}
 
 service UserService{
@@ -164,5 +168,5 @@ service UserService{
     rpc UserGetProfilePic(GetUserById)returns(UserImageResponse);
     rpc HomePage(GetUserById)returns(HomeResponse);
 
-    rpc IsUserExist(GetUserById)returns(NoArg);
+    rpc IsUserExist(GetUserById)returns(IsUserExistResponse);
 }
