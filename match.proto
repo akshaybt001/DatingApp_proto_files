@@ -16,4 +16,5 @@ message NoPara{}
 service MatchService{
     rpc Like(LikeRequest)returns(NoPara);
     rpc Unlike(LikeRequest)returns(NoPara);
+    rpc UnMatch(LikeRequest)returns(NoPara);
 }
