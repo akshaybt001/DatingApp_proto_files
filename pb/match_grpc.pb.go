@@ -19,9 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	MatchService_Like_FullMethodName    = "/user.MatchService/Like"
-	MatchService_Unlike_FullMethodName  = "/user.MatchService/Unlike"
-	MatchService_UnMatch_FullMethodName = "/user.MatchService/UnMatch"
+	MatchService_Like_FullMethodName     = "/user.MatchService/Like"
+	MatchService_Unlike_FullMethodName   = "/user.MatchService/Unlike"
+	MatchService_UnMatch_FullMethodName  = "/user.MatchService/UnMatch"
+	MatchService_GetMatch_FullMethodName = "/user.MatchService/GetMatch"
 )
 
 // MatchServiceClient is the client API for MatchService service.
@@ -31,6 +32,7 @@ type MatchServiceClient interface {
 	Like(ctx context.Context, in *LikeRequest, opts ...grpc.CallOption) (*NoPara, error)
 	Unlike(ctx context.Context, in *LikeRequest, opts ...grpc.CallOption) (*NoPara, error)
 	UnMatch(ctx context.Context, in *LikeRequest, opts ...grpc.CallOption) (*NoPara, error)
+	GetMatch(ctx context.Context, in *GetByUserId, opts ...grpc.CallOption) (*MatchResposne, error)
 }
 
 type matchServiceClient struct {
@@ -68,6 +70,15 @@ func (c *matchServiceClient) UnMatch(ctx context.Context, in *LikeRequest, opts 
 	return out, nil
 }
 
+func (c *matchServiceClient) GetMatch(ctx context.Context, in *GetByUserId, opts ...grpc.CallOption) (*MatchResposne, error) {
+	out := new(MatchResposne)
+	err := c.cc.Invoke(ctx, MatchService_GetMatch_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MatchServiceServer is the server API for MatchService service.
 // All implementations must embed UnimplementedMatchServiceServer
 // for forward compatibility
@@ -75,6 +86,7 @@ type MatchServiceServer interface {
 	Like(context.Context, *LikeRequest) (*NoPara, error)
 	Unlike(context.Context, *LikeRequest) (*NoPara, error)
 	UnMatch(context.Context, *LikeRequest) (*NoPara, error)
+	GetMatch(context.Context, *GetByUserId) (*MatchResposne, error)
 	mustEmbedUnimplementedMatchServiceServer()
 }
 
@@ -90,6 +102,9 @@ func (UnimplementedMatchServiceServer) Unlike(context.Context, *LikeRequest) (*N
 }
 func (UnimplementedMatchServiceServer) UnMatch(context.Context, *LikeRequest) (*NoPara, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnMatch not implemented")
+}
+func (UnimplementedMatchServiceServer) GetMatch(context.Context, *GetByUserId) (*MatchResposne, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMatch not implemented")
 }
 func (UnimplementedMatchServiceServer) mustEmbedUnimplementedMatchServiceServer() {}
 
@@ -158,6 +173,24 @@ func _MatchService_UnMatch_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MatchService_GetMatch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetByUserId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MatchServiceServer).GetMatch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MatchService_GetMatch_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MatchServiceServer).GetMatch(ctx, req.(*GetByUserId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MatchService_ServiceDesc is the grpc.ServiceDesc for MatchService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -176,6 +209,10 @@ var MatchService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UnMatch",
 			Handler:    _MatchService_UnMatch_Handler,
+		},
+		{
+			MethodName: "GetMatch",
+			Handler:    _MatchService_GetMatch_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

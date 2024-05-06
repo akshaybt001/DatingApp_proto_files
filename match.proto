@@ -10,6 +10,15 @@ message LikeRequest{
     string userId=2;
     
 }
+message GetByUserId{
+    string id=1;
+}
+
+message MatchResposne{
+    string id=1;
+    string matchId=2;
+    string userId=3;
+}
 
 message NoPara{}
 
@@ -17,4 +26,5 @@ service MatchService{
     rpc Like(LikeRequest)returns(NoPara);
     rpc Unlike(LikeRequest)returns(NoPara);
     rpc UnMatch(LikeRequest)returns(NoPara);
+    rpc GetMatch(GetByUserId)returns(MatchResposne);
 }
