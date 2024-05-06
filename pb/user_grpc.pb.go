@@ -50,6 +50,7 @@ const (
 	UserService_HomePage_FullMethodName               = "/user.UserService/HomePage"
 	UserService_IsUserExist_FullMethodName            = "/user.UserService/IsUserExist"
 	UserService_GetUserData_FullMethodName            = "/user.UserService/GetUserData"
+	UserService_DecrementLikeCount_FullMethodName     = "/user.UserService/DecrementLikeCount"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -87,6 +88,7 @@ type UserServiceClient interface {
 	HomePage(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*HomeResponse, error)
 	IsUserExist(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*IsUserExistResponse, error)
 	GetUserData(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*UserDataResponse, error)
+	DecrementLikeCount(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*NoArg, error)
 }
 
 type userServiceClient struct {
@@ -445,6 +447,15 @@ func (c *userServiceClient) GetUserData(ctx context.Context, in *GetUserById, op
 	return out, nil
 }
 
+func (c *userServiceClient) DecrementLikeCount(ctx context.Context, in *GetUserById, opts ...grpc.CallOption) (*NoArg, error) {
+	out := new(NoArg)
+	err := c.cc.Invoke(ctx, UserService_DecrementLikeCount_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -480,6 +491,7 @@ type UserServiceServer interface {
 	HomePage(context.Context, *GetUserById) (*HomeResponse, error)
 	IsUserExist(context.Context, *GetUserById) (*IsUserExistResponse, error)
 	GetUserData(context.Context, *GetUserById) (*UserDataResponse, error)
+	DecrementLikeCount(context.Context, *GetUserById) (*NoArg, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -579,6 +591,9 @@ func (UnimplementedUserServiceServer) IsUserExist(context.Context, *GetUserById)
 }
 func (UnimplementedUserServiceServer) GetUserData(context.Context, *GetUserById) (*UserDataResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserData not implemented")
+}
+func (UnimplementedUserServiceServer) DecrementLikeCount(context.Context, *GetUserById) (*NoArg, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DecrementLikeCount not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -1160,6 +1175,24 @@ func _UserService_GetUserData_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_DecrementLikeCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserById)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).DecrementLikeCount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_DecrementLikeCount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).DecrementLikeCount(ctx, req.(*GetUserById))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1278,6 +1311,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserData",
 			Handler:    _UserService_GetUserData_Handler,
+		},
+		{
+			MethodName: "DecrementLikeCount",
+			Handler:    _UserService_DecrementLikeCount_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

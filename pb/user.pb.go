@@ -1602,7 +1602,7 @@ var file_user_proto_rawDesc = []byte{
 	0x6f, 0x75, 0x6e, 0x74, 0x12, 0x22, 0x0a, 0x0c, 0x69, 0x73, 0x53, 0x75, 0x62, 0x73, 0x63, 0x72,
 	0x69, 0x62, 0x65, 0x64, 0x18, 0x07, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0c, 0x69, 0x73, 0x53, 0x75,
 	0x62, 0x73, 0x63, 0x72, 0x69, 0x62, 0x65, 0x64, 0x22, 0x07, 0x0a, 0x05, 0x4e, 0x6f, 0x41, 0x72,
-	0x67, 0x32, 0xc6, 0x0e, 0x0a, 0x0b, 0x55, 0x73, 0x65, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x67, 0x32, 0xfc, 0x0e, 0x0a, 0x0b, 0x55, 0x73, 0x65, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
 	0x65, 0x12, 0x3f, 0x0a, 0x0a, 0x55, 0x73, 0x65, 0x72, 0x53, 0x69, 0x67, 0x6e, 0x75, 0x70, 0x12,
 	0x17, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x53, 0x69, 0x67, 0x6e, 0x75,
 	0x70, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e,
@@ -1718,8 +1718,11 @@ var file_user_proto_rawDesc = []byte{
 	0x12, 0x38, 0x0a, 0x0b, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x44, 0x61, 0x74, 0x61, 0x12,
 	0x11, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x42, 0x79,
 	0x49, 0x64, 0x1a, 0x16, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x44, 0x61,
-	0x74, 0x61, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x06, 0x5a, 0x04, 0x2e, 0x2f,
-	0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x74, 0x61, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x34, 0x0a, 0x12, 0x44, 0x65,
+	0x63, 0x72, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x4c, 0x69, 0x6b, 0x65, 0x43, 0x6f, 0x75, 0x6e, 0x74,
+	0x12, 0x11, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x47, 0x65, 0x74, 0x55, 0x73, 0x65, 0x72, 0x42,
+	0x79, 0x49, 0x64, 0x1a, 0x0b, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x2e, 0x4e, 0x6f, 0x41, 0x72, 0x67,
+	0x42, 0x06, 0x5a, 0x04, 0x2e, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1792,39 +1795,41 @@ var file_user_proto_depIdxs = []int32{
 	3,  // 28: user.UserService.HomePage:input_type -> user.GetUserById
 	3,  // 29: user.UserService.IsUserExist:input_type -> user.GetUserById
 	3,  // 30: user.UserService.GetUserData:input_type -> user.GetUserById
-	1,  // 31: user.UserService.UserSignup:output_type -> user.UserSignupResponse
-	1,  // 32: user.UserService.UserLogin:output_type -> user.UserSignupResponse
-	1,  // 33: user.UserService.AdminLogin:output_type -> user.UserSignupResponse
-	22, // 34: user.UserService.CreateProfile:output_type -> user.NoArg
-	1,  // 35: user.UserService.GetUser:output_type -> user.UserSignupResponse
-	22, // 36: user.UserService.AdminAddInterest:output_type -> user.NoArg
-	22, // 37: user.UserService.AdminDeleteInterest:output_type -> user.NoArg
-	22, // 38: user.UserService.AdminUpdateInterest:output_type -> user.NoArg
-	6,  // 39: user.UserService.GetAllInterest:output_type -> user.InterestResponse
-	22, // 40: user.UserService.AddInterestUser:output_type -> user.NoArg
-	22, // 41: user.UserService.DeleteInterestUser:output_type -> user.NoArg
-	6,  // 42: user.UserService.GetInterestById:output_type -> user.InterestResponse
-	6,  // 43: user.UserService.GetAllInterestsUser:output_type -> user.InterestResponse
-	22, // 44: user.UserService.UserAddAge:output_type -> user.NoArg
-	18, // 45: user.UserService.UserGetAge:output_type -> user.UserAgeResponse
-	22, // 46: user.UserService.UserAddAddress:output_type -> user.NoArg
-	22, // 47: user.UserService.UserEditAddress:output_type -> user.NoArg
-	12, // 48: user.UserService.UserGetAddress:output_type -> user.AddressResponse
-	22, // 49: user.UserService.AdminAddGender:output_type -> user.NoArg
-	22, // 50: user.UserService.AdminUpdateGender:output_type -> user.NoArg
-	8,  // 51: user.UserService.GetAllGender:output_type -> user.GenderResponse
-	22, // 52: user.UserService.AddGenderUser:output_type -> user.NoArg
-	8,  // 53: user.UserService.GetAllGenderUser:output_type -> user.GenderResponse
-	22, // 54: user.UserService.UserAddPreference:output_type -> user.NoArg
-	22, // 55: user.UserService.UserEditPreference:output_type -> user.NoArg
-	14, // 56: user.UserService.GetAllPreference:output_type -> user.PreferenceResponse
-	16, // 57: user.UserService.UserUploadProfileImage:output_type -> user.UserImageResponse
-	16, // 58: user.UserService.UserGetProfilePic:output_type -> user.UserImageResponse
-	19, // 59: user.UserService.HomePage:output_type -> user.HomeResponse
-	20, // 60: user.UserService.IsUserExist:output_type -> user.IsUserExistResponse
-	21, // 61: user.UserService.GetUserData:output_type -> user.UserDataResponse
-	31, // [31:62] is the sub-list for method output_type
-	0,  // [0:31] is the sub-list for method input_type
+	3,  // 31: user.UserService.DecrementLikeCount:input_type -> user.GetUserById
+	1,  // 32: user.UserService.UserSignup:output_type -> user.UserSignupResponse
+	1,  // 33: user.UserService.UserLogin:output_type -> user.UserSignupResponse
+	1,  // 34: user.UserService.AdminLogin:output_type -> user.UserSignupResponse
+	22, // 35: user.UserService.CreateProfile:output_type -> user.NoArg
+	1,  // 36: user.UserService.GetUser:output_type -> user.UserSignupResponse
+	22, // 37: user.UserService.AdminAddInterest:output_type -> user.NoArg
+	22, // 38: user.UserService.AdminDeleteInterest:output_type -> user.NoArg
+	22, // 39: user.UserService.AdminUpdateInterest:output_type -> user.NoArg
+	6,  // 40: user.UserService.GetAllInterest:output_type -> user.InterestResponse
+	22, // 41: user.UserService.AddInterestUser:output_type -> user.NoArg
+	22, // 42: user.UserService.DeleteInterestUser:output_type -> user.NoArg
+	6,  // 43: user.UserService.GetInterestById:output_type -> user.InterestResponse
+	6,  // 44: user.UserService.GetAllInterestsUser:output_type -> user.InterestResponse
+	22, // 45: user.UserService.UserAddAge:output_type -> user.NoArg
+	18, // 46: user.UserService.UserGetAge:output_type -> user.UserAgeResponse
+	22, // 47: user.UserService.UserAddAddress:output_type -> user.NoArg
+	22, // 48: user.UserService.UserEditAddress:output_type -> user.NoArg
+	12, // 49: user.UserService.UserGetAddress:output_type -> user.AddressResponse
+	22, // 50: user.UserService.AdminAddGender:output_type -> user.NoArg
+	22, // 51: user.UserService.AdminUpdateGender:output_type -> user.NoArg
+	8,  // 52: user.UserService.GetAllGender:output_type -> user.GenderResponse
+	22, // 53: user.UserService.AddGenderUser:output_type -> user.NoArg
+	8,  // 54: user.UserService.GetAllGenderUser:output_type -> user.GenderResponse
+	22, // 55: user.UserService.UserAddPreference:output_type -> user.NoArg
+	22, // 56: user.UserService.UserEditPreference:output_type -> user.NoArg
+	14, // 57: user.UserService.GetAllPreference:output_type -> user.PreferenceResponse
+	16, // 58: user.UserService.UserUploadProfileImage:output_type -> user.UserImageResponse
+	16, // 59: user.UserService.UserGetProfilePic:output_type -> user.UserImageResponse
+	19, // 60: user.UserService.HomePage:output_type -> user.HomeResponse
+	20, // 61: user.UserService.IsUserExist:output_type -> user.IsUserExistResponse
+	21, // 62: user.UserService.GetUserData:output_type -> user.UserDataResponse
+	22, // 63: user.UserService.DecrementLikeCount:output_type -> user.NoArg
+	32, // [32:64] is the sub-list for method output_type
+	0,  // [0:32] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name

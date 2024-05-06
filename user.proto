@@ -180,4 +180,5 @@ service UserService{
 
     rpc IsUserExist(GetUserById)returns(IsUserExistResponse);
     rpc GetUserData(GetUserById)returns(UserDataResponse);
+    rpc DecrementLikeCount(GetUserById)returns(NoArg);
 }
