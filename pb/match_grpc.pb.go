@@ -31,7 +31,7 @@ const (
 type MatchServiceClient interface {
 	Like(ctx context.Context, in *LikeRequest, opts ...grpc.CallOption) (*NoPara, error)
 	Unlike(ctx context.Context, in *LikeRequest, opts ...grpc.CallOption) (*NoPara, error)
-	UnMatch(ctx context.Context, in *LikeRequest, opts ...grpc.CallOption) (*NoPara, error)
+	UnMatch(ctx context.Context, in *GetByUserId, opts ...grpc.CallOption) (*NoPara, error)
 	GetMatch(ctx context.Context, in *GetByUserId, opts ...grpc.CallOption) (MatchService_GetMatchClient, error)
 }
 
@@ -61,7 +61,7 @@ func (c *matchServiceClient) Unlike(ctx context.Context, in *LikeRequest, opts .
 	return out, nil
 }
 
-func (c *matchServiceClient) UnMatch(ctx context.Context, in *LikeRequest, opts ...grpc.CallOption) (*NoPara, error) {
+func (c *matchServiceClient) UnMatch(ctx context.Context, in *GetByUserId, opts ...grpc.CallOption) (*NoPara, error) {
 	out := new(NoPara)
 	err := c.cc.Invoke(ctx, MatchService_UnMatch_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -108,7 +108,7 @@ func (x *matchServiceGetMatchClient) Recv() (*MatchResposne, error) {
 type MatchServiceServer interface {
 	Like(context.Context, *LikeRequest) (*NoPara, error)
 	Unlike(context.Context, *LikeRequest) (*NoPara, error)
-	UnMatch(context.Context, *LikeRequest) (*NoPara, error)
+	UnMatch(context.Context, *GetByUserId) (*NoPara, error)
 	GetMatch(*GetByUserId, MatchService_GetMatchServer) error
 	mustEmbedUnimplementedMatchServiceServer()
 }
@@ -123,7 +123,7 @@ func (UnimplementedMatchServiceServer) Like(context.Context, *LikeRequest) (*NoP
 func (UnimplementedMatchServiceServer) Unlike(context.Context, *LikeRequest) (*NoPara, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Unlike not implemented")
 }
-func (UnimplementedMatchServiceServer) UnMatch(context.Context, *LikeRequest) (*NoPara, error) {
+func (UnimplementedMatchServiceServer) UnMatch(context.Context, *GetByUserId) (*NoPara, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnMatch not implemented")
 }
 func (UnimplementedMatchServiceServer) GetMatch(*GetByUserId, MatchService_GetMatchServer) error {
@@ -179,7 +179,7 @@ func _MatchService_Unlike_Handler(srv interface{}, ctx context.Context, dec func
 }
 
 func _MatchService_UnMatch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LikeRequest)
+	in := new(GetByUserId)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -191,7 +191,7 @@ func _MatchService_UnMatch_Handler(srv interface{}, ctx context.Context, dec fun
 		FullMethod: MatchService_UnMatch_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MatchServiceServer).UnMatch(ctx, req.(*LikeRequest))
+		return srv.(MatchServiceServer).UnMatch(ctx, req.(*GetByUserId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
