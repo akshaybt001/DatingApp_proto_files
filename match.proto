@@ -28,3 +28,4 @@ service MatchService{
     rpc UnMatch(GetByUserId)returns(NoPara);
     rpc GetMatch(GetByUserId)returns(stream MatchResposne);
 }
+

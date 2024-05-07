@@ -137,6 +137,11 @@ message UserDataResponse{
     bool isSubscribed=7;
 }
 
+message UpdateSubscriptionRequest{
+    string userId=1;
+    bool subscription=2;
+}
+
 message NoArg{}
 
 service UserService{
@@ -181,4 +186,5 @@ service UserService{
     rpc IsUserExist(GetUserById)returns(IsUserExistResponse);
     rpc GetUserData(GetUserById)returns(UserDataResponse);
     rpc DecrementLikeCount(GetUserById)returns(NoArg);
+    rpc UpdateSubscription(UpdateSubscriptionRequest)returns(NoArg);
 }
