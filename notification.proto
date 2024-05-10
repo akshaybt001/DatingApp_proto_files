@@ -19,9 +19,25 @@ message VerifyOtpResponse{
     bool verified=1;
 }
 
+message AddNotificationRequest{
+    string userId=1;
+    string message=2;
+}
+
+message GetNotificationsByUserId{
+    string userId=1;
+}
+
+message NotificationResponse{
+    string message=1;
+    bool seen=2;
+}
+
 message NoMessage{}
 
 service Notification{
     rpc SendOTP(SendOtpRequest)returns(NoMessage);
     rpc VerifyOTP(VerifyOtpRequest)returns(VerifyOtpResponse);
+    rpc AddNotification(AddNotificationRequest)returns(NoMessage);
+    rpc GetAllNotifications(GetNotificationsByUserId)returns(stream NotificationResponse);
 }
