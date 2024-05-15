@@ -19,10 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	MatchService_Like_FullMethodName     = "/user.MatchService/Like"
-	MatchService_Unlike_FullMethodName   = "/user.MatchService/Unlike"
-	MatchService_UnMatch_FullMethodName  = "/user.MatchService/UnMatch"
-	MatchService_GetMatch_FullMethodName = "/user.MatchService/GetMatch"
+	MatchService_Like_FullMethodName            = "/user.MatchService/Like"
+	MatchService_Unlike_FullMethodName          = "/user.MatchService/Unlike"
+	MatchService_UnMatch_FullMethodName         = "/user.MatchService/UnMatch"
+	MatchService_GetMatch_FullMethodName        = "/user.MatchService/GetMatch"
+	MatchService_GetWhoLikesUser_FullMethodName = "/user.MatchService/GetWhoLikesUser"
+	MatchService_GetUserlikes_FullMethodName    = "/user.MatchService/GetUserlikes"
 )
 
 // MatchServiceClient is the client API for MatchService service.
@@ -33,6 +35,8 @@ type MatchServiceClient interface {
 	Unlike(ctx context.Context, in *LikeRequest, opts ...grpc.CallOption) (*NoPara, error)
 	UnMatch(ctx context.Context, in *GetByUserId, opts ...grpc.CallOption) (*NoPara, error)
 	GetMatch(ctx context.Context, in *GetByUserId, opts ...grpc.CallOption) (MatchService_GetMatchClient, error)
+	GetWhoLikesUser(ctx context.Context, in *GetByUserId, opts ...grpc.CallOption) (MatchService_GetWhoLikesUserClient, error)
+	GetUserlikes(ctx context.Context, in *GetByUserId, opts ...grpc.CallOption) (MatchService_GetUserlikesClient, error)
 }
 
 type matchServiceClient struct {
@@ -102,6 +106,70 @@ func (x *matchServiceGetMatchClient) Recv() (*MatchResposne, error) {
 	return m, nil
 }
 
+func (c *matchServiceClient) GetWhoLikesUser(ctx context.Context, in *GetByUserId, opts ...grpc.CallOption) (MatchService_GetWhoLikesUserClient, error) {
+	stream, err := c.cc.NewStream(ctx, &MatchService_ServiceDesc.Streams[1], MatchService_GetWhoLikesUser_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &matchServiceGetWhoLikesUserClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type MatchService_GetWhoLikesUserClient interface {
+	Recv() (*LikedUsersResposne, error)
+	grpc.ClientStream
+}
+
+type matchServiceGetWhoLikesUserClient struct {
+	grpc.ClientStream
+}
+
+func (x *matchServiceGetWhoLikesUserClient) Recv() (*LikedUsersResposne, error) {
+	m := new(LikedUsersResposne)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *matchServiceClient) GetUserlikes(ctx context.Context, in *GetByUserId, opts ...grpc.CallOption) (MatchService_GetUserlikesClient, error) {
+	stream, err := c.cc.NewStream(ctx, &MatchService_ServiceDesc.Streams[2], MatchService_GetUserlikes_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &matchServiceGetUserlikesClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type MatchService_GetUserlikesClient interface {
+	Recv() (*LikedUsersResposne, error)
+	grpc.ClientStream
+}
+
+type matchServiceGetUserlikesClient struct {
+	grpc.ClientStream
+}
+
+func (x *matchServiceGetUserlikesClient) Recv() (*LikedUsersResposne, error) {
+	m := new(LikedUsersResposne)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // MatchServiceServer is the server API for MatchService service.
 // All implementations must embed UnimplementedMatchServiceServer
 // for forward compatibility
@@ -110,6 +178,8 @@ type MatchServiceServer interface {
 	Unlike(context.Context, *LikeRequest) (*NoPara, error)
 	UnMatch(context.Context, *GetByUserId) (*NoPara, error)
 	GetMatch(*GetByUserId, MatchService_GetMatchServer) error
+	GetWhoLikesUser(*GetByUserId, MatchService_GetWhoLikesUserServer) error
+	GetUserlikes(*GetByUserId, MatchService_GetUserlikesServer) error
 	mustEmbedUnimplementedMatchServiceServer()
 }
 
@@ -128,6 +198,12 @@ func (UnimplementedMatchServiceServer) UnMatch(context.Context, *GetByUserId) (*
 }
 func (UnimplementedMatchServiceServer) GetMatch(*GetByUserId, MatchService_GetMatchServer) error {
 	return status.Errorf(codes.Unimplemented, "method GetMatch not implemented")
+}
+func (UnimplementedMatchServiceServer) GetWhoLikesUser(*GetByUserId, MatchService_GetWhoLikesUserServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetWhoLikesUser not implemented")
+}
+func (UnimplementedMatchServiceServer) GetUserlikes(*GetByUserId, MatchService_GetUserlikesServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetUserlikes not implemented")
 }
 func (UnimplementedMatchServiceServer) mustEmbedUnimplementedMatchServiceServer() {}
 
@@ -217,6 +293,48 @@ func (x *matchServiceGetMatchServer) Send(m *MatchResposne) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _MatchService_GetWhoLikesUser_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(GetByUserId)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(MatchServiceServer).GetWhoLikesUser(m, &matchServiceGetWhoLikesUserServer{stream})
+}
+
+type MatchService_GetWhoLikesUserServer interface {
+	Send(*LikedUsersResposne) error
+	grpc.ServerStream
+}
+
+type matchServiceGetWhoLikesUserServer struct {
+	grpc.ServerStream
+}
+
+func (x *matchServiceGetWhoLikesUserServer) Send(m *LikedUsersResposne) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _MatchService_GetUserlikes_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(GetByUserId)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(MatchServiceServer).GetUserlikes(m, &matchServiceGetUserlikesServer{stream})
+}
+
+type MatchService_GetUserlikesServer interface {
+	Send(*LikedUsersResposne) error
+	grpc.ServerStream
+}
+
+type matchServiceGetUserlikesServer struct {
+	grpc.ServerStream
+}
+
+func (x *matchServiceGetUserlikesServer) Send(m *LikedUsersResposne) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // MatchService_ServiceDesc is the grpc.ServiceDesc for MatchService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -241,6 +359,16 @@ var MatchService_ServiceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "GetMatch",
 			Handler:       _MatchService_GetMatch_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "GetWhoLikesUser",
+			Handler:       _MatchService_GetWhoLikesUser_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "GetUserlikes",
+			Handler:       _MatchService_GetUserlikes_Handler,
 			ServerStreams: true,
 		},
 	},

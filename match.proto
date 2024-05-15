@@ -20,6 +20,11 @@ message MatchResposne{
     string userId=3;
 }
 
+message LikedUsersResposne{
+    string id=1;
+    string likedName=2;
+}
+
 message NoPara{}
 
 service MatchService{
@@ -27,5 +32,7 @@ service MatchService{
     rpc Unlike(LikeRequest)returns(NoPara);
     rpc UnMatch(GetByUserId)returns(NoPara);
     rpc GetMatch(GetByUserId)returns(stream MatchResposne);
+    rpc GetWhoLikesUser(GetByUserId)returns(stream LikedUsersResposne);
+    rpc GetUserlikes(GetByUserId)returns(stream LikedUsersResposne);
 }
 
