@@ -119,7 +119,7 @@ message HomeResponse{
     string gender=4;
     string city=5;
     string country=6;
-    string image=7;
+    repeated string image=7;
     repeated string interests=8;
 }
 
